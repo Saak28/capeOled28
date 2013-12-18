@@ -20,7 +20,19 @@
 
 	/* identification */
 	part-number = "BB-OLED";
-	version="00A0";
+	version = "00A0";
+
+	/* state the resources this cape uses */
+	exclusive-use =
+		/* the pin header uses */
+		"P9.17",	/* GPIO_DC */
+		"P9.28",	/* GPIO_RS */
+		"P9.17",	/* spi0_cs0 */
+		"P9.18",	/* spi0_d1 */
+		"P9.21",	/* spi0_d0 */
+		"P9.22",	/* spi0_sclk */
+		/* the hardware ip uses */
+		"spi0";
 
 	fragment@0
 	{

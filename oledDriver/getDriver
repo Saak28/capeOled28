@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ $(lsmod | grep oled) ]]
+then
+        echo Remove Module
+        rmmod oled.ko
+fi
+
+rsync -rv --exclude getDriver --exclude oled saak@192.168.1.21:~/beagle/cape/capeOled28/driver/ ./
+
+if [[ "$@" == "start" ]]
+then
+	insmod oled.ko
+fi
