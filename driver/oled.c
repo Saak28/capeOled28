@@ -2,6 +2,7 @@
 #include <linux/kernel.h>       /* Needed for KERN_INFO */
 #include <linux/timer.h>
 #include <linux/gpio.h>
+#include <linux/of_gpio.h>
 #include <linux/irq.h>
 #include <linux/interrupt.h>
 #include <linux/unistd.h>
@@ -13,8 +14,8 @@
 #define DRIVER_DESC   "First Led Test Driver"
 MODULE_LICENSE("GPL");
 
-unsigned int GPIO_DC=49;
-unsigned int GPIO_RS=60;
+// unsigned int GPIO_DC=49;
+// unsigned int GPIO_RS=60;
 
 static struct timer_list my_timer;
 int tt;
@@ -112,9 +113,9 @@ void my_timer_callback( unsigned long data )
 
 int OledInit()
 {
-	gpio_set_value(GPIO_RS,0);
+	gpio_set_value(oled.gpio_rs,0);
 	udelay(120);
-	gpio_set_value(GPIO_RS,1);
+	gpio_set_value(oled.gpio_rs,1);
 
 // 	OledWriteCmd(CMD_SET_COMMAND_LOCK);
 // 	OledWriteData(0x12);	// Unlock Basic Commands (0x12/0x16)
@@ -271,29 +272,9 @@ int OledInit()
 // 	OledWriteData(color);
 // }
 
-static const struct spi_device_id oled_device_id[] = {
-	{
-		.name = "oled-2.8",
-		.driver_data = OLED_2_8,
-	},
-	{
-		.name = "oled-2.8-font",
-		.driver_data = OLED_2_8_FONT,
-	},
-	{
-	}
-};
-MODULE_DEVICE_TABLE(spi,oled_device_id);
-
-static const struct of_device_id oled_dt_ids[] = {
-	{ .compatible = "saak,oled-2.8", .data = (void *) OLED_2_8, },
-	{ .compatible = "saak,oled-2.8-font", .data = (void *) OLED_2_8_FONT, },
-	{ 0,0, },
-};
-MODULE_DEVICE_TABLE(of,oled_dt_ids);
-
 static int Oled_probe(struct spi_device *spi)
 {
+	struct device_node *np=spi->dev.of_node;
 	int ret;
 
 	tt=0;
@@ -303,15 +284,31 @@ static int Oled_probe(struct spi_device *spi)
 	///////////////////////////////////////////////////////////////
 	// Init GPIO
 	///////////////////////////////////////////////////////////////
-	ret=gpio_request(GPIO_DC,"Oled DC 1");
-	if(ret)	printk(KERN_EMERG "Error: gpio_request: %d\n",GPIO_DC);
-	ret=gpio_request(GPIO_RS,"Oled RS");
-	if(ret)	printk(KERN_EMERG "Error: gpio_request: %d\n",GPIO_RS);
+	oled.gpio_rs=of_get_named_gpio(np,"oled-rs",0);
+	if(oled.gpio_rs<0)
+	{
+		printk("failed to find oled-rst node!\n");
+		return -EINVAL;
+	}
+	oled.gpio_dc=of_get_named_gpio(np,"oled-dc",0);
+	if(oled.gpio_dc<0)
+	{
+		printk("failed to find oled-rs node!\n");
+		return -EINVAL;
+	}
+	printk(KERN_EMERG "Found GPIO: oled_dc:%d\n",oled.gpio_dc);
+	printk(KERN_EMERG "Found GPIO: oled_rs:%d\n",oled.gpio_rs);
+	
 
-	gpio_direction_output(GPIO_DC,1);
-	gpio_direction_output(GPIO_RS,1);
-	gpio_set_value(GPIO_DC,0);
-	gpio_set_value(GPIO_RS,0);
+	ret=gpio_request(oled.gpio_dc,"Oled DC 1");
+	if(ret)	printk(KERN_EMERG "Error: gpio_request: %d\n",oled.gpio_dc);
+	ret=gpio_request(oled.gpio_rs,"Oled RS");
+	if(ret)	printk(KERN_EMERG "Error: gpio_request: %d\n",oled.gpio_rs);
+
+	gpio_direction_output(oled.gpio_dc,1);
+	gpio_direction_output(oled.gpio_rs,1);
+	gpio_set_value(oled.gpio_dc,0);
+	gpio_set_value(oled.gpio_rs,0);
 
 // 	if(!InitSpi())
 // 		return 0;
@@ -326,7 +323,20 @@ static int Oled_probe(struct spi_device *spi)
 	return 0;
 }
 
-// static int __devexit Oled_spi_remove(struct spi_device *spi)
+static const struct spi_device_id oled_device_id[] = {
+	{.name = "saak,oled-2.8",.driver_data = OLED_2_8,},
+	{.name = "saak,oled-2.8-font",.driver_data = OLED_2_8_FONT,},
+	{ },
+};
+MODULE_DEVICE_TABLE(spi,oled_device_id);
+
+static const struct of_device_id oled_dt_ids[] = {
+	{ .compatible = "saak,oled-2.8", .data = (void *) OLED_2_8, },
+	{ .compatible = "saak,oled-2.8-font", .data = (void *) OLED_2_8_FONT, },
+	{ },
+};
+MODULE_DEVICE_TABLE(of,oled_dt_ids);
+
 static int Oled_spi_remove(struct spi_device *spi)
 {
 // 	struct fb_info *info = spi_get_drvdata(spi);
@@ -337,8 +347,8 @@ static int Oled_spi_remove(struct spi_device *spi)
 	/* remove kernel timer when unloading module */
 	del_timer(&my_timer);
 
-	gpio_free(GPIO_DC);
-	gpio_free(GPIO_RS);
+	gpio_free(oled.gpio_dc);
+	gpio_free(oled.gpio_rs);
 
 	printk(KERN_EMERG "Close Oled.\n");
 	return 0;
@@ -346,13 +356,14 @@ static int Oled_spi_remove(struct spi_device *spi)
 
 static struct spi_driver Oled_spi_driver=
 {
-	.id_table = oled_device_id,
 	.driver		=
 	{
 		.name		= "oled",
+		.bus = &spi_bus_type,
 		.owner	= THIS_MODULE,
 		.of_match_table = oled_dt_ids,
 	},
+	.id_table	= oled_device_id,
 	.probe		= Oled_probe,
 	.remove		= Oled_spi_remove,
 };

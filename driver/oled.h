@@ -54,6 +54,14 @@
 #define CMD_SET_DISPLAY_ENHANCEMENT_A				0xB4
 #define CMD_SET_DISPLAY_ENHANCEMENT_B				0xD1
 
+
+typedef struct
+{
+	struct spi_device *spi;
+	int gpio_rs;
+	int gpio_dc;
+} oledStruct;
+
 int OledModuleInit(void);
 void OledModuleExit(void);
 // int InitSpi(void);
@@ -68,7 +76,6 @@ int OpenSpiDevice(int*);
 void CloseSpiDevice(int*);
 void OledSetPixel(unsigned char,unsigned char,unsigned int);
 
-struct spi_master *spi_master;
-struct spi_device *spi_device;
+oledStruct oled;
 
 #endif /* OLED28_H_ */

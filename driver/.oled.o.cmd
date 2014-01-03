@@ -578,6 +578,7 @@ deps_/home/saak/beagle/cape/capeOled28/driver/oled.o := \
   include/linux/radix-tree.h \
   include/linux/seq_file.h \
   include/linux/pinctrl/pinctrl-state.h \
+  include/linux/of_gpio.h \
   include/linux/irq.h \
     $(wildcard include/config/generic/hardirqs.h) \
     $(wildcard include/config/generic/pending/irq.h) \
