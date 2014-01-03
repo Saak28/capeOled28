@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "Building Lcd2 Application"
+echo "Building Oled28 Application"
 
-g++ -O2 -Wall -Wno-unused-result -Wno-unused-variable lcd2.cpp SimpleGPIO.cpp ILI9341.cpp -o lcd2
+g++ -O2 -Wall -Wno-unused-result -Wno-unused-variable oled28.cpp -o oled28
