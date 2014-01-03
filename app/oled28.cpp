@@ -67,7 +67,7 @@ void ReleaseGpio()
 int OledInit()
 {
 	gpio_set_value(GPIO_RS,LOW);
-	usleep(100000);
+	usleep(120);
 	gpio_set_value(GPIO_RS,HIGH);
 
 	OledWriteCmd(CMD_SET_COMMAND_LOCK);

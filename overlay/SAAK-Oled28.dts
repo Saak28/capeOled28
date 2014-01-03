@@ -58,7 +58,11 @@
 
 			spidev@0
 			{
+<<<<<<< HEAD
 				spi-max-frequency = <10000000>;
+=======
+				spi-max-frequency = <16000000>;
+>>>>>>> 3c5a397e7ec323637a86fbeb8a0a7469e8df1f19
 				reg = <0>;
 				compatible = "linux,spidev";
 			};
