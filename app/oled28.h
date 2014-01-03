@@ -2,7 +2,7 @@
 #define OLED28_H_
 
 #define SYSFS_SPI_DIR		"/dev/spidev1.0"
-#define MAX_BUF				64
+#define SPI_MAX_BUF				1024
 
 ///////////////////////////////////////////////////////
 // SSD1322 COMMANDS
@@ -47,6 +47,8 @@ void OledCls(unsigned char);
 int OledWriteCmd(unsigned char);
 int OledWriteData(unsigned char);
 int WriteSpi(unsigned char);
+int OpenSpiDevice(int*);
+void CloseSpiDevice(int*);
 void OledSetPixel(unsigned char,unsigned char,unsigned int);
 
 char sysFsSpi[64];

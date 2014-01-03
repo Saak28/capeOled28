@@ -20,20 +20,23 @@ int main(int argc, char *argv[])
 	InitGpio();
 	OledInit();
 	OledCls(0x44);
-	usleep(1000000);
 	OledCls(0x00);
-	usleep(1000000);
 // 	OledCls(0xFF);
 // 	usleep(1000000);
 // 	OledWriteCmd(CMD_DISPLAY_MODE_INVERSE);	// Normal Display Mode (0x00/0x01/0x02/0x03)
 // 	OledWriteCmd(CMD_DISPLAY_MODE_ALL_ON);	// Normal Display Mode (0x00/0x01/0x02/0x03)
 	
-	for(int i=0;i<16;i++)
-		OledSetPixel(0,i,0x1000*i);
+	OledSetPixel(0,0,0xF000);
+	OledSetPixel(252,0,0x000F);
+	OledSetPixel(0,63,0xF000);
+	OledSetPixel(252,63,0x000F);
 
-	OledSetPixel(4,0,0xF0F0);
-	OledSetPixel(4,1,0x0F0F);
-	OledSetPixel(0,63,0x000F);
+	for(int i=0;i<16;i++)
+		OledSetPixel(127,i,0x1000*i);
+
+// 	OledSetPixel(4,0,0xF0F0);
+// 	OledSetPixel(4,1,0x0F0F);
+// 	OledSetPixel(0,63,0x000F);
 
 
 	cout << "Init Oled 2.8 done..." << endl;
@@ -151,8 +154,18 @@ void OledCls(unsigned char fillData)
 	OledWriteData(0x00);
 
 	OledWriteCmd(CMD_WRITE_RAM_CMD);
-	for(int i=0;i<(10*1024);i++)
-		OledWriteData(fillData);
+	gpio_set_value(GPIO_DC,HIGH);
+
+	char buf[SPI_MAX_BUF];
+	int spiFile;	
+	if(!OpenSpiDevice(&spiFile))
+		return;
+
+	for(int i=0;i<SPI_MAX_BUF;i++)
+		buf[i]=fillData;;
+	for(int j=0;j<8;j++)
+		write(spiFile,buf,SPI_MAX_BUF);
+	CloseSpiDevice(&spiFile);
 }
 
 int OledWriteCmd(unsigned char cmd)
@@ -169,7 +182,7 @@ int OledWriteData(unsigned char data)
 
 int WriteSpi(unsigned char data)
 {
-	char buf[MAX_BUF];
+	char buf[SPI_MAX_BUF];
 
 	int fd=open(SYSFS_SPI_DIR,O_WRONLY);
 	if(fd<0)
@@ -181,6 +194,22 @@ int WriteSpi(unsigned char data)
 	write(fd,buf,1);
 	close(fd);
 	return 1;
+}
+
+int OpenSpiDevice(int *spiFile)
+{
+	*spiFile=open(SYSFS_SPI_DIR,O_WRONLY);
+	if(spiFile<0)
+	{
+		perror("WriteSpi");
+		return 0;
+	}
+	return 1;
+}
+
+void CloseSpiDevice(int *spiFile)
+{
+	close(*spiFile);
 }
 
 void OledSetPixel(unsigned char x,unsigned char y,unsigned int color)
