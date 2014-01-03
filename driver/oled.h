@@ -12,12 +12,7 @@
 #define OLED_2_8_FONT							1	/* Saak SPI OLED 2.8 Font" */
 
 #define TIMER_PERIOD								250		// * 1 ms
-// #define SPI_BUS									1			// Bus Master #
-// #define SPI_BUS_SPEED							16000000	// Bus Speed MHz
-// #define SPI_BUS_CS0								0
-#define SPI_MAX_BUF								1024
-// #define SPI_DRIVER_NAME							"Oled28"
-// #define SPI_DRIVER_LEN							6
+#define SPI_MAX_BUF								512
 
 ///////////////////////////////////////////////////////
 // SSD1322 COMMANDS
@@ -64,7 +59,6 @@ typedef struct
 
 int OledModuleInit(void);
 void OledModuleExit(void);
-// int InitSpi(void);
 void InitGpio(void);
 void ReleaseGpio(void);
 int OledInit(void);
@@ -72,8 +66,6 @@ void OledCls(unsigned char);
 int OledWriteCmd(unsigned char);
 int OledWriteData(unsigned char);
 int WriteSpi(unsigned char);
-int OpenSpiDevice(int*);
-void CloseSpiDevice(int*);
 void OledSetPixel(unsigned char,unsigned char,unsigned int);
 
 oledStruct oled;

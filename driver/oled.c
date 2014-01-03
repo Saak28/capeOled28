@@ -14,7 +14,7 @@
 #define DRIVER_DESC   "First Led Test Driver"
 MODULE_LICENSE("GPL");
 
-// unsigned int GPIO_DC=49;
+// unsigned int oled.gpio_dc=49;
 // unsigned int GPIO_RS=60;
 
 static struct timer_list my_timer;
@@ -34,82 +34,14 @@ void my_timer_callback( unsigned long data )
 // 	else
 // 		gpio_set_value(LED_GPIO_2,0);
 
-// 	u8 buf[10]={0x55, 1, 2, 3, 4 };
-// 	spi_write(spi_device,buf,1);
-}
-
-// int InitSpi()
-// {
-// 	///////////////////////////////////////////////////////////////
-// 	// Init SPI
-// 	///////////////////////////////////////////////////////////////
-// 	struct device *pdev;
-// 	char buff[64];
-// 	int status = 0;
-// 
-// 	spi_master=spi_busnum_to_master(SPI_BUS);
-// 	if (!spi_master)
-// 	{
-// 		printk(KERN_ALERT "spi_busnum_to_master(%d) returned NULL\n",SPI_BUS);
-// 		printk(KERN_ALERT "Missing modprobe omap2_mcspi?\n");
-// 		return 0;
-// 	}
-// 	spi_device=spi_alloc_device(spi_master);
-// 	if(!spi_device)
-// 	{
-// 		put_device(&spi_master->dev);
-// 		printk(KERN_ALERT "spi_alloc_device() failed\n");
-// 		return 0;
-// 	}
-//  
-// 	/* specify a chip select line */
-// 	spi_device->chip_select=SPI_BUS_CS0;
-// 
-// 	/* Check whether this SPI bus.cs is already claimed */
-// 	snprintf(buff,sizeof(buff),"%s.%u", 
-// 			dev_name(&spi_device->master->dev),
-// 			spi_device->chip_select);
-//  
-// 	pdev=bus_find_device_by_name(spi_device->dev.bus, NULL, buff);
-//  	if(pdev)
-// 	{
-// 		/* We are not going to use this spi_device, so free it */ 
-// 		spi_dev_put(spi_device);
-// 		
-// 		/* 
-// 		 * There is already a device configured for this bus.cs combination.
-// 		 * It's okay if it's us. This happens if we previously loaded then 
-//                  * unloaded our driver. 
-//                  * If it is not us, we complain and fail.
-// 		 */
-// 		if (pdev->driver && pdev->driver->name && 
-// 				strcmp(SPI_DRIVER_NAME,pdev->driver->name))
-// 		{
-// 			printk(KERN_ALERT  "Driver [%s] already registered for %s\n",pdev->driver->name,buff);
-// 			status = -1;
-// 		} 
-// 	}
-// 	else
-// 	{
-// 		spi_device->max_speed_hz=SPI_BUS_SPEED;
-// 		spi_device->mode=SPI_MODE_0;
-// 		spi_device->bits_per_word=8;
-// 		spi_device->irq=-1;
-// 		spi_device->controller_state=NULL;
-// 		spi_device->controller_data=NULL;
-// 		strlcpy(spi_device->modalias,"Oled",6);
-// 		status=spi_add_device(spi_device);
-// 		if(status<0)
-// 		{	
-// 			spi_dev_put(spi_device);
-// 			printk(KERN_ALERT "spi_add_device() failed: %d\n",status);		
-// 		}				
-// 	}
-// 	put_device(&spi_master->dev);
-/* 
-	return status;
+// 	u8 buf[5]={0x55, 1, 2, 3, 4 };
+// 	spi_write(oled.spi,buf,1);
 	
-}*/
+// 	if(tt&0x01)
+// 		OledSetPixel(10,10,0xFFFF);
+// 	else
+// 		OledSetPixel(10,10,0x0000);
+}
 
 int OledInit()
 {
@@ -117,165 +49,138 @@ int OledInit()
 	udelay(120);
 	gpio_set_value(oled.gpio_rs,1);
 
-// 	OledWriteCmd(CMD_SET_COMMAND_LOCK);
-// 	OledWriteData(0x12);	// Unlock Basic Commands (0x12/0x16)
-// 	
-// 	OledWriteCmd(CMD_SET_DISPLAY_OFF);	// Display Off (0x00/0x01)
-// 	
-// 	OledWriteCmd(CMD_SET_COLUMN_ADDRESS);
-// 	OledWriteData(0x1C);
-// 	OledWriteData(0x5B);
-// 	
-// 	OledWriteCmd(CMD_SET_ROW_ADDRESS);
-// 	OledWriteData(0x00);
-// 	OledWriteData(0x3F);
-// 	
-// 	OledWriteCmd(CMD_SET_DISPLAY_CLOCK);
-// 	OledWriteData(0x91);	// Set Clock as 80 Frames/Sec
-// 	
-// 	OledWriteCmd(CMD_SET_MULTIPLEX_RATIO);
-// 	OledWriteData(0x3F);	// 1/64 Duty (0x0F~0x3F)
-// 	
-// 	OledWriteCmd(CMD_SET_DISPLAY_OFFSET);
-// 	OledWriteData(0x00);	// Shift Mapping RAM Counter (0x00~0x3F)
-// 	
-// 	OledWriteCmd(CMD_SET_DISPLAY_START_LINE);
-// 	OledWriteData(0x00);	// Set Mapping RAM Display Start Line (0x00~0x7F)
-// 	
-// 	OledWriteCmd(CMD_SET_REMAP);
-// 	OledWriteData(0x14);	// 0x14
-// 	OledWriteData(0x11);	// Enable dual COM mode
-// 	
-// 	OledWriteCmd(CMD_SET_GPIO);
-// 	OledWriteData(0x00);	// Disable GPIO input pin
-// 	
-// 	OledWriteCmd(CMD_FUNCTION_SELECTION);
-// 	OledWriteData(0x01);	// Enable internal VDD regulator
-// 
-// 	OledWriteCmd(CMD_SET_DISPLAY_ENHANCEMENT_A);
-// 	OledWriteData(0xA0);	// Set_Display_Enhancement_A(0xA0,0xFD);
-// 	OledWriteData(0xFD);
-// 	
-// 	OledWriteCmd(CMD_SET_CONTRAST_CONTROL);
-// 	OledWriteData(0x9F);	// Set Segment Output Current
-// 	
-// 	OledWriteCmd(CMD_MASTER_CONTRAST_CONTROL);
-// 	OledWriteData(0x0F);	// Set Scale Factor of Segment Output Current Control 
-// 	
-// 	OledWriteCmd(CMD_SELECT_DEFAULT);	// set default linear gray scale table
-// 	OledWriteCmd(CMD_ENABLE_GRAYSCALE_TABLE);
-// 	
-// 	OledWriteCmd(CMD_SET_PHASE_LENGTH);
-// 	OledWriteData(0xE2);	// Set Phase 1 as 5 Clocks & Phase 2 as 14 Clocks
-// 
-// 	OledWriteCmd(CMD_SET_DISPLAY_ENHANCEMENT_B);
-// 	OledWriteData(0x20);	// Set_Display_Enhancement_B(0x20);
-// 	
-// 	OledWriteCmd(CMD_SET_PRECHARGE_VOLTAGE);
-// 	OledWriteData(0x1F);	// Set Pre‐Charge Voltage Level as 0.60*VCC
-// 	
-// 	OledWriteCmd(CMD_SET_SECOND_PRECHARGE_PERIOD);
-// 	OledWriteData(0x08);	// Set Second Pre‐Charge Period as 8 Clocks 
-// 	
-// 	OledWriteCmd(CMD_SET_VCOMH_VOLTAGE);
-// 	OledWriteData(0x07);	// Set Common Pins Deselect Voltage Level as 0.86*VCC
-// 	
-// 	OledWriteCmd(CMD_DISPLAY_MODE_NORMAL);	// Normal Display Mode (0x00/0x01/0x02/0x03)
-// 	
-// 	OledWriteCmd(CMD_EXIT_PARTIAL_DISPLAY);
-// // 	OledWriteCmd(CMD_ENABLE_PARTIAL_DISPLAY);
-// // 	OledWriteData(0x00);	// Disable Partial Display
-// // 	OledWriteData(0x3F);	// 
-// 	
-// 	OledWriteCmd(CMD_SET_DISPLAY_ON);
+	OledWriteCmd(CMD_SET_COMMAND_LOCK);
+	OledWriteData(0x12);	// Unlock Basic Commands (0x12/0x16)
+	
+	OledWriteCmd(CMD_SET_DISPLAY_OFF);	// Display Off (0x00/0x01)
+	
+	OledWriteCmd(CMD_SET_COLUMN_ADDRESS);
+	OledWriteData(0x1C);
+	OledWriteData(0x5B);
+	
+	OledWriteCmd(CMD_SET_ROW_ADDRESS);
+	OledWriteData(0x00);
+	OledWriteData(0x3F);
+	
+	OledWriteCmd(CMD_SET_DISPLAY_CLOCK);
+	OledWriteData(0x91);	// Set Clock as 80 Frames/Sec
+	
+	OledWriteCmd(CMD_SET_MULTIPLEX_RATIO);
+	OledWriteData(0x3F);	// 1/64 Duty (0x0F~0x3F)
+	
+	OledWriteCmd(CMD_SET_DISPLAY_OFFSET);
+	OledWriteData(0x00);	// Shift Mapping RAM Counter (0x00~0x3F)
+	
+	OledWriteCmd(CMD_SET_DISPLAY_START_LINE);
+	OledWriteData(0x00);	// Set Mapping RAM Display Start Line (0x00~0x7F)
+	
+	OledWriteCmd(CMD_SET_REMAP);
+	OledWriteData(0x14);	// 0x14
+	OledWriteData(0x11);	// Enable dual COM mode
+	
+	OledWriteCmd(CMD_SET_GPIO);
+	OledWriteData(0x00);	// Disable GPIO input pin
+	
+	OledWriteCmd(CMD_FUNCTION_SELECTION);
+	OledWriteData(0x01);	// Enable internal VDD regulator
+
+	OledWriteCmd(CMD_SET_DISPLAY_ENHANCEMENT_A);
+	OledWriteData(0xA0);	// Set_Display_Enhancement_A(0xA0,0xFD);
+	OledWriteData(0xFD);
+	
+	OledWriteCmd(CMD_SET_CONTRAST_CONTROL);
+	OledWriteData(0x9F);	// Set Segment Output Current
+	
+	OledWriteCmd(CMD_MASTER_CONTRAST_CONTROL);
+	OledWriteData(0x0F);	// Set Scale Factor of Segment Output Current Control 
+	
+	OledWriteCmd(CMD_SELECT_DEFAULT);	// set default linear gray scale table
+	OledWriteCmd(CMD_ENABLE_GRAYSCALE_TABLE);
+	
+	OledWriteCmd(CMD_SET_PHASE_LENGTH);
+	OledWriteData(0xE2);	// Set Phase 1 as 5 Clocks & Phase 2 as 14 Clocks
+
+	OledWriteCmd(CMD_SET_DISPLAY_ENHANCEMENT_B);
+	OledWriteData(0x20);	// Set_Display_Enhancement_B(0x20);
+	
+	OledWriteCmd(CMD_SET_PRECHARGE_VOLTAGE);
+	OledWriteData(0x1F);	// Set Pre‐Charge Voltage Level as 0.60*VCC
+	
+	OledWriteCmd(CMD_SET_SECOND_PRECHARGE_PERIOD);
+	OledWriteData(0x08);	// Set Second Pre‐Charge Period as 8 Clocks 
+	
+	OledWriteCmd(CMD_SET_VCOMH_VOLTAGE);
+	OledWriteData(0x07);	// Set Common Pins Deselect Voltage Level as 0.86*VCC
+	
+	OledWriteCmd(CMD_DISPLAY_MODE_NORMAL);	// Normal Display Mode (0x00/0x01/0x02/0x03)
+	
+	OledWriteCmd(CMD_EXIT_PARTIAL_DISPLAY);
+// 	OledWriteCmd(CMD_ENABLE_PARTIAL_DISPLAY);
+// 	OledWriteData(0x00);	// Disable Partial Display
+// 	OledWriteData(0x3F);	// 
+	
+	OledWriteCmd(CMD_SET_DISPLAY_ON);
 
 	return 1;
 }
-// 
-// void OledCls(unsigned char fillData)
-// {
-// 	OledWriteCmd(CMD_SET_COLUMN_ADDRESS);
-// 	OledWriteData(0x1C);
-// 	
-// 	OledWriteCmd(CMD_SET_ROW_ADDRESS);
-// 	OledWriteData(0x00);
-// 
-// 	OledWriteCmd(CMD_WRITE_RAM_CMD);
-// 	gpio_set_value(GPIO_DC,HIGH);
-// 
-// 	char buf[SPI_MAX_BUF];
-// 	int spiFile;	
-// 	if(!OpenSpiDevice(&spiFile))
-// 		return;
-// 
-// 	for(int i=0;i<SPI_MAX_BUF;i++)
-// 		buf[i]=fillData;;
-// 	for(int j=0;j<8;j++)
-// 		write(spiFile,buf,SPI_MAX_BUF);
-// 	CloseSpiDevice(&spiFile);
-// }
-// 
-// int OledWriteCmd(unsigned char cmd)
-// {
-// 	gpio_set_value(GPIO_DC,LOW);
-// 	return WriteSpi(cmd);
-// }
-// 
-// int OledWriteData(unsigned char data)
-// {
-// 	gpio_set_value(GPIO_DC,HIGH);
-// 	return WriteSpi(data);
-// }
-// 
-// int WriteSpi(unsigned char data)
-// {
-// 	char buf[SPI_MAX_BUF];
-// 
-// 	int fd=open(SYSFS_SPI_DIR,O_WRONLY);
-// 	if(fd<0)
-// 	{
-// 		perror("WriteSpi");
-// 		return 0;
-// 	}
-// 	buf[0]=data;
-// 	write(fd,buf,1);
-// 	close(fd);
-// 	return 1;
-// }
-// 
-// int OpenSpiDevice(int *spiFile)
-// {
-// 	*spiFile=open(SYSFS_SPI_DIR,O_WRONLY);
-// 	if(spiFile<0)
-// 	{
-// 		perror("WriteSpi");
-// 		return 0;
-// 	}
-// 	return 1;
-// }
-// 
-// void CloseSpiDevice(int *spiFile)
-// {
-// 	close(*spiFile);
-// }
-// 
-// void OledSetPixel(unsigned char x,unsigned char y,unsigned int color)
-// {
-// 	OledWriteCmd(CMD_SET_COLUMN_ADDRESS);
-// 	OledWriteData(0x1C+(x>>2));
-// 	
-// 	OledWriteCmd(CMD_SET_ROW_ADDRESS);
-// 	OledWriteData(y);
-// 	
-// 	OledWriteCmd(CMD_WRITE_RAM_CMD);
-// 	OledWriteData(color>>8);
-// 	OledWriteData(color);
-// }
+
+void OledCls(unsigned char fillData)
+{
+	char buf[SPI_MAX_BUF];
+	int i,j;	
+
+	OledWriteCmd(CMD_SET_COLUMN_ADDRESS);
+	OledWriteData(0x1C);
+	
+	OledWriteCmd(CMD_SET_ROW_ADDRESS);
+	OledWriteData(0x00);
+
+	OledWriteCmd(CMD_WRITE_RAM_CMD);
+	gpio_set_value(oled.gpio_dc,1);
+
+	for(i=0;i<SPI_MAX_BUF;i++)
+		buf[i]=fillData;;
+	for(j=0;j<16;j++)
+		spi_write(oled.spi,buf,SPI_MAX_BUF);
+}
+
+int OledWriteCmd(unsigned char cmd)
+{
+	gpio_set_value(oled.gpio_dc,0);
+	return WriteSpi(cmd);
+}
+
+int OledWriteData(unsigned char data)
+{
+	gpio_set_value(oled.gpio_dc,1);
+	return WriteSpi(data);
+}
+
+int WriteSpi(unsigned char data)
+{
+	char buf[2];
+
+	buf[0]=data;
+	return spi_write(oled.spi,buf,1);
+}
+
+void OledSetPixel(unsigned char x,unsigned char y,unsigned int color)
+{
+	OledWriteCmd(CMD_SET_COLUMN_ADDRESS);
+	OledWriteData(0x1C+(x>>2));
+	
+	OledWriteCmd(CMD_SET_ROW_ADDRESS);
+	OledWriteData(y);
+	
+	OledWriteCmd(CMD_WRITE_RAM_CMD);
+	OledWriteData(color>>8);
+	OledWriteData(color);
+}
 
 static int Oled_probe(struct spi_device *spi)
 {
 	struct device_node *np=spi->dev.of_node;
-	int ret;
+	int i,ret;
 
 	tt=0;
 
@@ -296,10 +201,6 @@ static int Oled_probe(struct spi_device *spi)
 		printk("failed to find oled-rs node!\n");
 		return -EINVAL;
 	}
-	printk(KERN_EMERG "Found GPIO: oled_dc:%d\n",oled.gpio_dc);
-	printk(KERN_EMERG "Found GPIO: oled_rs:%d\n",oled.gpio_rs);
-	
-
 	ret=gpio_request(oled.gpio_dc,"Oled DC 1");
 	if(ret)	printk(KERN_EMERG "Error: gpio_request: %d\n",oled.gpio_dc);
 	ret=gpio_request(oled.gpio_rs,"Oled RS");
@@ -310,9 +211,21 @@ static int Oled_probe(struct spi_device *spi)
 	gpio_set_value(oled.gpio_dc,0);
 	gpio_set_value(oled.gpio_rs,0);
 
-// 	if(!InitSpi())
-// 		return 0;
+	oled.spi=spi;
+
 	OledInit();
+	OledCls(0x44);
+	OledCls(0x00);
+	OledSetPixel(0,0,0xF000);
+	OledSetPixel(252,0,0x000F);
+	OledSetPixel(0,63,0xF000);
+	OledSetPixel(252,63,0x000F);
+	for(i=0;i<16;i++)
+	{
+		OledSetPixel(127,i,0x1000*i);
+		OledSetPixel(63,i,0x1000*i);
+		OledSetPixel(191,i,0x1000*i);
+	}
 	
 	/* setup your timer to call my_timer_callback */
 	setup_timer(&my_timer, my_timer_callback, 0);
@@ -361,7 +274,7 @@ static struct spi_driver Oled_spi_driver=
 		.name		= "oled",
 		.bus = &spi_bus_type,
 		.owner	= THIS_MODULE,
-		.of_match_table = oled_dt_ids,
+		.of_match_table = oled_dt_ids,	// this table is need for device tree usage
 	},
 	.id_table	= oled_device_id,
 	.probe		= Oled_probe,

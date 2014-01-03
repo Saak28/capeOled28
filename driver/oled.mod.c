@@ -28,6 +28,9 @@ __attribute__((section("__versions"))) = {
 	{ 0x3757c9b, "of_get_named_gpio_flags" },
 	{ 0xf53d8915, "arm_delay_ops" },
 	{ 0x432fd7f6, "__gpio_set_value" },
+	{ 0x331013da, "spi_sync" },
+	{ 0xfa2a45e, "__memzero" },
+	{ 0x5f754e5a, "memset" },
 	{ 0x7d11c268, "jiffies" },
 	{ 0x8834396c, "mod_timer" },
 	{ 0x3bd1b1f6, "msecs_to_jiffies" },
@@ -47,4 +50,4 @@ MODULE_ALIAS("of:N*T*Csaak,oled-2.8-font*");
 MODULE_ALIAS("spi:saak,oled-2.8");
 MODULE_ALIAS("spi:saak,oled-2.8-font");
 
-MODULE_INFO(srcversion, "0B670E341323B51ECBD99D0");
+MODULE_INFO(srcversion, "864CF568A580735EDE335F7");
