@@ -601,6 +601,27 @@ deps_/home/saak/beagle/cape/capeOled28/driver/oled28.o := \
   include/linux/vtime.h \
   /home/saak/beagle/linux-dev_3.8/KERNEL/arch/arm/include/asm/hardirq.h \
   include/linux/irq_cpustat.h \
+  /home/saak/beagle/linux-dev_3.8/KERNEL/include/uapi/linux/unistd.h \
+  /home/saak/beagle/linux-dev_3.8/KERNEL/arch/arm/include/asm/unistd.h \
+    $(wildcard include/config/oabi/compat.h) \
+  /home/saak/beagle/linux-dev_3.8/KERNEL/arch/arm/include/uapi/asm/unistd.h \
+  include/linux/delay.h \
+  /home/saak/beagle/linux-dev_3.8/KERNEL/arch/arm/include/asm/delay.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/spi.h) \
+  include/linux/slab.h \
+    $(wildcard include/config/slab/debug.h) \
+    $(wildcard include/config/failslab.h) \
+    $(wildcard include/config/slob.h) \
+    $(wildcard include/config/slub.h) \
+    $(wildcard include/config/debug/slab.h) \
+    $(wildcard include/config/slab.h) \
+  include/linux/slab_def.h \
+    $(wildcard include/config/memcg/kmem.h) \
+  include/linux/kmalloc_sizes.h \
+  include/linux/kthread.h \
+  include/linux/err.h \
+  /home/saak/beagle/cape/capeOled28/driver/oled28.h \
 
 /home/saak/beagle/cape/capeOled28/driver/oled28.o: $(deps_/home/saak/beagle/cape/capeOled28/driver/oled28.o)
 
