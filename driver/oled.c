@@ -7,7 +7,7 @@
 #include <linux/unistd.h>
 #include <linux/delay.h>
 #include <linux/spi/spi.h>
-#include "oled28.h"
+#include "oled.h"
 
 #define DRIVER_AUTHOR "Saak Dertadian <s.dertadian@gmail.com>"
 #define DRIVER_DESC   "First Led Test Driver"
@@ -96,7 +96,7 @@ void my_timer_callback( unsigned long data )
 // 		spi_device->irq=-1;
 // 		spi_device->controller_state=NULL;
 // 		spi_device->controller_data=NULL;
-// 		strlcpy(spi_device->modalias,"Oled28",6);
+// 		strlcpy(spi_device->modalias,"Oled",6);
 // 		status=spi_add_device(spi_device);
 // 		if(status<0)
 // 		{	
@@ -271,13 +271,34 @@ int OledInit()
 // 	OledWriteData(color);
 // }
 
-static int Oled28_probe(struct spi_device *spi)
+static const struct spi_device_id oled_device_id[] = {
+	{
+		.name = "oled-2.8",
+		.driver_data = OLED_2_8,
+	},
+	{
+		.name = "oled-2.8-font",
+		.driver_data = OLED_2_8_FONT,
+	},
+	{
+	}
+};
+MODULE_DEVICE_TABLE(spi,oled_device_id);
+
+static const struct of_device_id oled_dt_ids[] = {
+	{ .compatible = "saak,oled-2.8", .data = (void *) OLED_2_8, },
+	{ .compatible = "saak,oled-2.8-font", .data = (void *) OLED_2_8_FONT, },
+	{ 0,0, },
+};
+MODULE_DEVICE_TABLE(of,oled_dt_ids);
+
+static int Oled_probe(struct spi_device *spi)
 {
 	int ret;
 
 	tt=0;
 
-	printk(KERN_EMERG "Init Oled28.\n");
+	printk(KERN_EMERG "Init Oled.\n");
 
 	///////////////////////////////////////////////////////////////
 	// Init GPIO
@@ -305,8 +326,8 @@ static int Oled28_probe(struct spi_device *spi)
 	return 0;
 }
 
-// static int __devexit Oled28_spi_remove(struct spi_device *spi)
-static int Oled28_spi_remove(struct spi_device *spi)
+// static int __devexit Oled_spi_remove(struct spi_device *spi)
+static int Oled_spi_remove(struct spi_device *spi)
 {
 // 	struct fb_info *info = spi_get_drvdata(spi);
 // 
@@ -319,19 +340,21 @@ static int Oled28_spi_remove(struct spi_device *spi)
 	gpio_free(GPIO_DC);
 	gpio_free(GPIO_RS);
 
-	printk(KERN_EMERG "Close Oled28.\n");
+	printk(KERN_EMERG "Close Oled.\n");
 	return 0;
 }
 
-static struct spi_driver Oled28_spi_driver=
+static struct spi_driver Oled_spi_driver=
 {
+	.id_table = oled_device_id,
 	.driver		=
 	{
-		.name		= "Oled28-spi",
+		.name		= "oled",
 		.owner	= THIS_MODULE,
+		.of_match_table = oled_dt_ids,
 	},
-	.probe		= Oled28_probe,
-	.remove		= Oled28_spi_remove,
+	.probe		= Oled_probe,
+	.remove		= Oled_spi_remove,
 };
 
 
@@ -341,17 +364,17 @@ int OledModuleInit()
 
 	printk(KERN_EMERG "OledModuleInit\n");
 	
-	ret=spi_register_driver(&Oled28_spi_driver);
+	ret=spi_register_driver(&Oled_spi_driver);
 	if(ret)
-		pr_err("Oled28: Unable to register SPI driver: %d\n", ret);	
-// 	return spi_register_driver(&Oled28_spi_driver);
+		pr_err("Oled: Unable to register SPI driver: %d\n", ret);	
+// 	return spi_register_driver(&Oled_spi_driver);
 	return ret;
 }
 
 void OledModuleExit()
 {
 	printk(KERN_EMERG "OledModuleExit\n");
-	spi_unregister_driver(&Oled28_spi_driver);
+	spi_unregister_driver(&Oled_spi_driver);
 }
 
 module_init(OledModuleInit);

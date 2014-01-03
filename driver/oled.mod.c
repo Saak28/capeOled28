@@ -40,5 +40,9 @@ __used
 __attribute__((section(".modinfo"))) =
 "depends=";
 
+MODULE_ALIAS("of:N*T*Csaak,oled-2.8*");
+MODULE_ALIAS("of:N*T*Csaak,oled-2.8-font*");
+MODULE_ALIAS("spi:oled-2.8");
+MODULE_ALIAS("spi:oled-2.8-font");
 
-MODULE_INFO(srcversion, "5CBA8CC4740ADC1C8D40BF8");
+MODULE_INFO(srcversion, "91E56EA170EC4634129C05A");

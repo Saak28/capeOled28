@@ -1,13 +1,23 @@
 #ifndef OLED28_H_
 #define OLED28_H_
 
+#define DRVNAME									"oled"
+#define WIDTH										256
+#define HEIGHT										64
+#define BPP											4
+#define MAX_PALETTE								16
+
+/* Supported display modules */
+#define OLED_2_8									0	/* Saak SPI OLED 2.8" */
+#define OLED_2_8_FONT							1	/* Saak SPI OLED 2.8 Font" */
+
 #define TIMER_PERIOD								250		// * 1 ms
-#define SPI_BUS									1			// Bus Master #
-#define SPI_BUS_SPEED							16000000	// Bus Speed MHz
-#define SPI_BUS_CS0								0
+// #define SPI_BUS									1			// Bus Master #
+// #define SPI_BUS_SPEED							16000000	// Bus Speed MHz
+// #define SPI_BUS_CS0								0
 #define SPI_MAX_BUF								1024
-#define SPI_DRIVER_NAME							"Oled28"
-#define SPI_DRIVER_LEN							6
+// #define SPI_DRIVER_NAME							"Oled28"
+// #define SPI_DRIVER_LEN							6
 
 ///////////////////////////////////////////////////////
 // SSD1322 COMMANDS
