@@ -2,4 +2,4 @@
 
 echo "Building Oled28 Application"
 
-g++ -O2 -Wall -Wno-unused-result -Wno-unused-variable oled28.cpp -o oled28
+g++ -O2 -Wall -Wno-unused-result -Wno-unused-variable oled28.cpp SimpleGPIO.cpp -o oled28
