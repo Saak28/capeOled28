@@ -18,6 +18,13 @@
                   0x154 0x30  /* spi0_d0, INPUT_PULLUP | MODE0 */
                   0x158 0x10  /* spi0_d1, OUTPUT_PULLUP | MODE0 */
                   0x15c 0x10  /* spi0_cs0, OUTPUT_PULLUP | MODE0 */
+
+		0x044 0x7F  /* P9_23  49 OUTPUT MODE7 - DC  */
+		0x078 0x7F  /* P9_12  60 OUTPUT MODE7 - RS  */
+					
+		/* OUTPUT  GPIO(mode7) 0x07 pulldown, 0x17 pullup, 0x?f no pullup/down */
+		/* INPUT   GPIO(mode7) 0x27 pulldown, 0x37 pullup, 0x?f no pullup/down */
+
                 >;
             };
         };
