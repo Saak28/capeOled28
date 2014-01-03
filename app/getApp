@@ -4,10 +4,11 @@ if [ -f lcd2 ]
 then
 	rm lcd2
 fi
-wget ftp://saak:xxx@192.168.1.21/beagle/cape/capeLcd2/app/lcd2
-chmod +x lcd2
+#wget ftp://saak:xxx@192.168.1.21/beagle/cape/capeLcd2/app/lcd2
+rsync -rv --exclude getApp --exclude oled28 saak@192.168.1.21:~/beagle/cape/capeOled28/app ./
 
 if [[ "$@" == "start" ]]
 then
-	./lcd2
+	./build
+	./oled28
 fi
