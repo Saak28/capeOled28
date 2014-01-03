@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Building Lcd2 Application"
+
+g++ -O2 -Wall -Wno-unused-result -Wno-unused-variable lcd2.cpp SimpleGPIO.cpp ILI9341.cpp -o lcd2

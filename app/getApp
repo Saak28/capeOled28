@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -f lcd2 ]
+then
+	rm lcd2
+fi
+wget ftp://saak:xxx@192.168.1.21/beagle/cape/capeLcd2/app/lcd2
+chmod +x lcd2
+
+if [[ "$@" == "start" ]]
+then
+	./lcd2
+fi
