@@ -1,0 +1,1 @@
+cmd_/home/saak/beagle/cape/capeOled28/driver/oled28.ko := arm-linux-gnueabi-ld -EL -r  -T /home/saak/beagle/linux-dev_3.8/KERNEL/scripts/module-common.lds --build-id  -o /home/saak/beagle/cape/capeOled28/driver/oled28.ko /home/saak/beagle/cape/capeOled28/driver/oled28.o /home/saak/beagle/cape/capeOled28/driver/oled28.mod.o
