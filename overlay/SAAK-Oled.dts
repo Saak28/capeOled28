@@ -65,7 +65,7 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 
-				compatible = "linux,spidev","saak,oled";
+				compatible = "linux,spidev","saak,oled-2.8";
 				spi-max-frequency = <16000000>;
 				reg = <0>;
 
