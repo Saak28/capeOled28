@@ -73,7 +73,7 @@
 				pinctrl-0 = <&bone_oled_lcd_pins>;
 
 				oled-dc = <&gpio2 17 0>;
-				oled-rs = <&gpio2 17 0>;
+				oled-rs = <&gpio2 28 0>;
 			};
 		};
 	};
