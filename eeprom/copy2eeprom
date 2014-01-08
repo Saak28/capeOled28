@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cat /sys/bus/i2c/devices/1-0054/eeprom | hexdump -C
+cat data.eeprom > /sys/bus/i2c/devices/1-0054/eeprom
+cat /sys/bus/i2c/devices/1-0054/eeprom | hexdump -C
