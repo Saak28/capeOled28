@@ -73,4 +73,4 @@ MODULE_ALIAS("of:N*T*Csaak,oled-2.8-font*");
 MODULE_ALIAS("spi:saak,oled-2.8");
 MODULE_ALIAS("spi:saak,oled-2.8-font");
 
-MODULE_INFO(srcversion, "49C6782A0F6C73CE35319B9");
+MODULE_INFO(srcversion, "AB91EAF3DD30BD713F82AC5");

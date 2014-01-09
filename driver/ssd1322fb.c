@@ -242,14 +242,41 @@ static void ssd1322fb_update_display(struct ssd1322fb_par *par)
 {
 	int ret=0;
 	u16 *vmem;
-	int i;
+	int i,k,c;
+	static int kk=0x8000;
+	static int div=0;
 
 //	printk(KERN_EMERG "----> ssd1322fb_update_display <----\n");
-
 	u16 *vmem16=(u16 *)par->info->screen_base;
 	vmem=par->ssbuf;
 	for (i=0;i<WIDTH*HEIGHT*BPP/8/2;i++)
-		vmem[i]=swab16(vmem16[i]);
+	{
+//		vmem[i]=(vmem16[i]&0xFFFF);
+//		vmem[i]=(vmem16[i]);
+
+		vmem[i]=0x0000;
+		if(vmem16[i]&0x2000)	vmem[i]|=0xF000;
+		if(vmem16[i]&0x4000)	vmem[i]|=0x0F00;
+		if(vmem16[i]&0x0200)	vmem[i]|=0x00F0;
+		if(vmem16[i]&0x0200)	vmem[i]|=0x000F;
+//		if(vmem16[i]&kk)		vmem[i]|=0x000F;
+
+//		if(vmem16[i]&kk)
+//			vmem[i]=0xFFFF;
+//		else
+//			vmem[i]=0x0000;
+	}
+//	if(++div>=4)
+//	{
+//		div=0;
+		kk>>=1;
+//	}
+	if(!kk)
+	{
+		kk=0x8000;
+//		printk(KERN_EMERG "kk=0x8000\n");
+	}
+	//		vmem[i]=swab16(vmem16[i]);
 
 	mutex_lock(&(par->io_lock));
 
@@ -291,15 +318,17 @@ static int ssd1322fb_init_display(struct ssd1322fb_par *par)
 	}
 	ssd1322_reset(par);
 	ssd1322_run_cfg_script(par);
+
+	// Splash Screen
 	for(i=0x00;i<0x100;i+=0x11)
 	{
 		ssd1322Cls(par,i);
-		mdelay(25);
+		mdelay(10);
 	}
 	for(i=0xFF;i>=0;i-=0x11)
 	{
 		ssd1322Cls(par,i);
-		mdelay(25);
+		mdelay(10);
 	}
 out:
 	return ret;
@@ -381,7 +410,7 @@ static int ssd1322fb_setcolreg(unsigned regno,unsigned red,unsigned green,
 							   unsigned blue,unsigned transp,
 							   struct fb_info *info)
 {
-//	printk(KERN_EMERG "----> ssd1322fb_setcolreg <----\n");
+//	printk(KERN_EMERG "----> ssd1322fb_setcolreg <----%d - R:%04X, G:%04X, B:%04X\n",regno,red,green,blue);
 	if(regno>=MAX_PALETTE)
 		return -EINVAL;
 
@@ -390,6 +419,10 @@ static int ssd1322fb_setcolreg(unsigned regno,unsigned red,unsigned green,
 			((red & 0xf800) |
 			((green & 0xfc00) >> 5) |
 			((blue & 0xf800) >> 11));
+//	((u32*)(info->pseudo_palette))[regno]=
+//			((red & 0xF000) |
+//			((green & 0xF000) >> 4) |
+//			((blue & 0xF000) >> 8));
 	return 0;
 }
 
@@ -452,14 +485,14 @@ static int ssd1322fb_probe(struct spi_device *spi)
 	info->fix.smem_len=vmem_size;
 	info->var=ssd1322fb_var;
 	/* Choose any packed pixel format as long as it's RGB565 */
-	info->var.red.offset=11;
-	info->var.red.length=5;
-	info->var.green.offset=5;
-	info->var.green.length=6;
-	info->var.blue.offset=0;
-	info->var.blue.length=5;
-	info->var.transp.offset=0;
-	info->var.transp.length=0;
+	info->var.red.offset = 11;
+	info->var.red.length = 5;
+	info->var.green.offset = 5;
+	info->var.green.length = 6;
+	info->var.blue.offset = 0;
+	info->var.blue.length = 5;
+	info->var.transp.offset = 0;
+	info->var.transp.length = 0;
 	info->flags=FBINFO_FLAG_DEFAULT | FBINFO_VIRTFB;
 
 	info->fbdefio = &ssd1322fb_defio;
