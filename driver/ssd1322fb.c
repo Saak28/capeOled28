@@ -242,9 +242,9 @@ static void ssd1322fb_update_display(struct ssd1322fb_par *par)
 {
 	int ret=0;
 	u16 *vmem;
-	int i,k,c;
-	static int kk=0x8000;
-	static int div=0;
+	int i;
+//	static int kk=0x8000;
+//	static int div=0;
 
 //	printk(KERN_EMERG "----> ssd1322fb_update_display <----\n");
 	u16 *vmem16=(u16 *)par->info->screen_base;
@@ -269,13 +269,13 @@ static void ssd1322fb_update_display(struct ssd1322fb_par *par)
 //	if(++div>=4)
 //	{
 //		div=0;
-		kk>>=1;
+//		kk>>=1;
 //	}
-	if(!kk)
-	{
-		kk=0x8000;
+//	if(!kk)
+//	{
+//		kk=0x8000;
 //		printk(KERN_EMERG "kk=0x8000\n");
-	}
+//	}
 	//		vmem[i]=swab16(vmem16[i]);
 
 	mutex_lock(&(par->io_lock));
