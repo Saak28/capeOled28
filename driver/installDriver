@@ -1,0 +1,5 @@
+#!/bin/bash
+echo Install ssd1322fb driver...
+
+cp ssd1322fb.ko /lib/modules/$(uname -r)/kernel/drivers/
+depmod
