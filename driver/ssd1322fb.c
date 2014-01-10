@@ -253,10 +253,15 @@ static void ssd1322fb_update_display(struct ssd1322fb_par *par)
 //		vmem[i]=(vmem16[i]);
 
 		vmem[i]=0x0000;
-		if(vmem16[i]&0x0100)	vmem[i]|=0xF000;
-		if(vmem16[i]&0x1000)	vmem[i]|=0x0F00;
-		if(vmem16[i]&0x0001)	vmem[i]|=0x00F0;
-		if(vmem16[i]&0x0010)	vmem[i]|=0x000F;
+//		if(vmem16[i]&0x0100)	vmem[i]|=0xF000;
+//		if(vmem16[i]&0x1000)	vmem[i]|=0x0F00;
+//		if(vmem16[i]&0x0001)	vmem[i]|=0x00F0;
+//		if(vmem16[i]&0x0010)	vmem[i]|=0x000F;
+
+		if(vmem16[i]&0x0F00)	vmem[i]|=(vmem16[i]&0x0F00)<<5;
+		if(vmem16[i]&0xF000)	vmem[i]|=(vmem16[i]&0xF000)>>3;
+		if(vmem16[i]&0x000F)	vmem[i]|=(vmem16[i]&0x000F)<<5;
+		if(vmem16[i]&0x00F0)	vmem[i]|=(vmem16[i]&0x00F0)>>3;
 	}
 //	kk>>=1;
 //	if(!kk)
@@ -274,11 +279,7 @@ static void ssd1322fb_update_display(struct ssd1322fb_par *par)
 	/* Internal RAM write command */
 	ssd1322_write_cmd(par,CMD_WRITE_RAM_CMD);
 
-//	for(i=0;i<4096;i++)
-//		vmem[i]=0x4444;
 	/* Blast framebuffer to SSD1322 internal display RAM */
-//	printk(KERN_EMERG "%04X %04X %04X %04X\n",vmem[0],vmem[1],vmem[2],vmem[3]);
-
 	ret=ssd1322_write_data_buf(par,(u8 *)vmem,WIDTH*HEIGHT*BPP/8);
 	if(ret<0)
 		pr_err("%s: spi_write failed to update display buffer\n",par->info->fix.id);
@@ -401,6 +402,7 @@ static int ssd1322fb_setcolreg(unsigned regno,unsigned red,unsigned green,
 	if(regno>=MAX_PALETTE)
 		return -EINVAL;
 
+//	((u32*)(info->pseudo_palette))[regno]=(MAX_PALETTE-1)-regno;	// Negative
 	((u32*)(info->pseudo_palette))[regno]=regno;
 //	printk(KERN_EMERG "----> ssd1322fb_setcolreg <----%d - R:%04X, G:%04X, B:%04X, B:%04X X:%04X\n",regno,red,green,blue,c,((u16*)(info->pseudo_palette))[regno]);
 	return 0;
@@ -623,15 +625,15 @@ static struct spi_driver ssd1322fb_driver=
 
 static int __init ssd1322fb_init(void)
 {
-	printk(KERN_EMERG "================================\n");
-	printk(KERN_EMERG "SSD1322Init\n");
+//	printk(KERN_EMERG "================================\n");
+	printk(KERN_INFO "SSD1322Init\n");
 	return spi_register_driver(&ssd1322fb_driver);
 }
 
 static void __exit ssd1322fb_exit(void)
 {
-	printk(KERN_EMERG "SSD1322Exit\n");
-	printk(KERN_EMERG "================================\n");
+	printk(KERN_INFO "SSD1322Exit\n");
+//	printk(KERN_EMERG "================================\n");
 	spi_unregister_driver(&ssd1322fb_driver);
 }
 
