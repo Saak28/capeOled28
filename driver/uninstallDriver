@@ -1,0 +1,5 @@
+#!/bin/bash
+echo Uninstall ssd1322fb driver...
+
+rm -f /lib/modules/$(uname -r)/kernel/drivers/ssd1322fb.ko
+depmod
